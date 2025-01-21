@@ -22,12 +22,14 @@ import { RoleTimelineChannelService } from './channels/role-timeline.js';
 import { ReversiChannelService } from './channels/reversi.js';
 import { ReversiGameChannelService } from './channels/reversi-game.js';
 import { type MiChannelService } from './channel.js';
+import { PrefectureTimelineChannelService } from './channels/prefecture-timeline.js';
 
 @Injectable()
 export class ChannelsService {
 	constructor(
 		private mainChannelService: MainChannelService,
 		private homeTimelineChannelService: HomeTimelineChannelService,
+		private prefectureTimelineChannelService: PrefectureTimelineChannelService,
 		private localTimelineChannelService: LocalTimelineChannelService,
 		private hybridTimelineChannelService: HybridTimelineChannelService,
 		private globalTimelineChannelService: GlobalTimelineChannelService,
@@ -50,6 +52,7 @@ export class ChannelsService {
 		switch (name) {
 			case 'main': return this.mainChannelService;
 			case 'homeTimeline': return this.homeTimelineChannelService;
+			case 'prefectureTimeline': return this.prefectureTimelineChannelService;
 			case 'localTimeline': return this.localTimelineChannelService;
 			case 'hybridTimeline': return this.hybridTimelineChannelService;
 			case 'globalTimeline': return this.globalTimelineChannelService;

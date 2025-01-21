@@ -15,14 +15,25 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkPostForm v-if="defaultStore.reactiveState.showFixedPostForm.value" :class="$style.postForm" class="post-form _panel" fixed style="margin-bottom: var(--MI-margin);"/>
 				<div v-if="queue > 0" :class="$style.new"><button class="_buttonPrimary" :class="$style.newButton" @click="top()">{{ i18n.ts.newNoteRecived }}</button></div>
 				<div :class="$style.tl">
+					<MkSelect v-if="src === 'prefecture'" v-model="prefecture" style="margin-bottom: var(--MI-margin);">
+						<template #label>{{ i18n.ts._timelines.prefecture }}</template>
+						<option
+							v-for="x in Object.keys(i18n.ts._prefecture).filter(n => n !== '_empty')"
+							:key="x"
+							:value="x"
+						>
+							{{ i18n.ts._prefecture[x] }}
+						</option>
+					</MkSelect>
 					<MkTimeline
 						ref="tlComponent"
-						:key="src + withRenotes + withReplies + onlyFiles"
+						:key="src + withRenotes + withReplies + onlyFiles + prefecture"
 						:src="src.split(':')[0]"
 						:list="src.split(':')[1]"
 						:withRenotes="withRenotes"
 						:withReplies="withReplies"
 						:onlyFiles="onlyFiles"
+						:prefecture="prefecture"
 						:sound="true"
 						@queue="queueUpdated"
 					/>
@@ -35,12 +46,15 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 <script lang="ts" setup>
 import { computed, watch, provide, shallowRef, ref, onMounted, onActivated } from 'vue';
+import { scroll } from '@@/js/scroll.js';
 import type { Tab } from '@/components/global/MkPageHeader.tabs.vue';
+import type { MenuItem } from '@/types/menu.js';
+import type { BasicTimelineType } from '@/timelines.js';
 import MkTimeline from '@/components/MkTimeline.vue';
 import MkInfo from '@/components/MkInfo.vue';
 import MkPostForm from '@/components/MkPostForm.vue';
 import MkHorizontalSwipe from '@/components/MkHorizontalSwipe.vue';
-import { scroll } from '@@/js/scroll.js';
+import MkSelect from '@/components/MkSelect.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { defaultStore } from '@/store.js';
@@ -50,10 +64,8 @@ import { definePageMetadata } from '@/scripts/page-metadata.js';
 import { antennasCache, userListsCache, favoritedChannelsCache } from '@/cache.js';
 import { deviceKind } from '@/scripts/device-kind.js';
 import { deepMerge } from '@/scripts/merge.js';
-import type { MenuItem } from '@/types/menu.js';
 import { miLocalStorage } from '@/local-storage.js';
 import { availableBasicTimelines, hasWithReplies, isAvailableBasicTimeline, isBasicTimeline, basicTimelineIconClass } from '@/timelines.js';
-import type { BasicTimelineType } from '@/timelines.js';
 
 provide('shouldOmitHeaderTitle', true);
 
@@ -83,7 +95,7 @@ const localSocialTLFilterSwitchStore = ref<'withReplies' | 'onlyFiles' | false>(
 const withReplies = computed<boolean>({
 	get: () => {
 		if (!$i) return false;
-		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'onlyFiles') {
+		if (['prefecture', 'local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'onlyFiles') {
 			return false;
 		} else {
 			return defaultStore.reactiveState.tl.value.filter.withReplies;
@@ -93,7 +105,7 @@ const withReplies = computed<boolean>({
 });
 const onlyFiles = computed<boolean>({
 	get: () => {
-		if (['local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withReplies') {
+		if (['prefecture', 'local', 'social'].includes(src.value) && localSocialTLFilterSwitchStore.value === 'withReplies') {
 			return false;
 		} else {
 			return defaultStore.reactiveState.tl.value.filter.onlyFiles;
@@ -124,6 +136,11 @@ watch(src, () => {
 watch(withSensitive, () => {
 	// これだけはクライアント側で完結する処理なので手動でリロード
 	tlComponent.value?.reloadTimeline();
+});
+
+const prefecture = computed<string>({
+	get: () => defaultStore.reactiveState.tl.value.filter.prefecture,
+	set: (x) => saveTlFilterString('prefecture', x),
 });
 
 function queueUpdated(q: number): void {
@@ -214,6 +231,13 @@ function saveSrc(newSrc: TimelinePageSrc): void {
 
 function saveTlFilter(key: keyof typeof defaultStore.state.tl.filter, newValue: boolean) {
 	if (key !== 'withReplies' || $i) {
+		const out = deepMerge({ filter: { [key]: newValue } }, defaultStore.state.tl);
+		defaultStore.set('tl', out);
+	}
+}
+
+function saveTlFilterString(key: keyof typeof defaultStore.state.tl.filter, newValue: string) {
+	if ($i) {
 		const out = deepMerge({ filter: { [key]: newValue } }, defaultStore.state.tl);
 		defaultStore.set('tl', out);
 	}

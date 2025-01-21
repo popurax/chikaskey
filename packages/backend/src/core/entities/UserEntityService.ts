@@ -529,6 +529,7 @@ export class UserEntityService implements OnModuleInit {
 				isSuspended: user.isSuspended,
 				description: profile!.description,
 				location: profile!.location,
+				prefecture: profile!.prefecture,
 				birthday: profile!.birthday,
 				lang: profile!.lang,
 				fields: profile!.fields,

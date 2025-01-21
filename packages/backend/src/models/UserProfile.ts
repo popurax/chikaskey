@@ -5,6 +5,7 @@
 
 import { Entity, Column, Index, OneToOne, JoinColumn, PrimaryColumn } from 'typeorm';
 import { obsoleteNotificationTypes, followingVisibilities, followersVisibilities, notificationTypes } from '@/types.js';
+import { prefectures } from '@/types.js';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 import { MiPage } from './Page.js';
@@ -286,6 +287,12 @@ export class MiUserProfile {
 	})
 	public userHost: string | null;
 	//#endregion
+
+	@Column('enum', {
+		enum: prefectures,
+		nullable: true,
+	})
+	public prefecture: typeof prefectures[number] | null;
 
 	constructor(data: Partial<MiUserProfile>) {
 		if (data == null) return;

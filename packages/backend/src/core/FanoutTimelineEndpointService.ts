@@ -7,6 +7,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DI } from '@/di-symbols.js';
 import { bindThis } from '@/decorators.js';
 import type { MiUser } from '@/models/User.js';
+import { MiUserProfile } from '@/models/UserProfile.js';
 import type { MiNote } from '@/models/Note.js';
 import { Packed } from '@/misc/json-schema.js';
 import type { NotesRepository } from '@/models/_.js';
@@ -33,6 +34,7 @@ type TimelineOptions = {
 	excludeNoFiles?: boolean;
 	excludeReplies?: boolean;
 	excludePureRenotes: boolean;
+	prefecture?: MiUserProfile['prefecture'];
 	dbFallback: (untilId: string | null, sinceId: string | null, limit: number) => Promise<MiNote[]>,
 };
 
@@ -119,6 +121,14 @@ export class FanoutTimelineEndpointService {
 				};
 			}
 
+			if (ps.prefecture) {
+				const parentFilter = filter;
+				filter = (note) => {
+					// @ts-expect-error: プロパティ 'profile' はタイプ 'MiUser' に存在しません
+					return note.user?.profile?.prefecture === ps.prefecture && parentFilter(note);
+				};
+			}
+
 			const redisTimeline: MiNote[] = [];
 			let readFromRedis = 0;
 			let lastSuccessfulRate = 1; // rateをキャッシュする？
@@ -168,7 +178,13 @@ export class FanoutTimelineEndpointService {
 			.leftJoinAndSelect('note.renote', 'renote')
 			.leftJoinAndSelect('reply.user', 'replyUser')
 			.leftJoinAndSelect('renote.user', 'renoteUser')
-			.leftJoinAndSelect('note.channel', 'channel');
+			.leftJoinAndSelect('note.channel', 'channel')
+			.leftJoinAndMapOne(
+				'user.profile',
+				MiUserProfile,
+				'userProfile',
+				'userProfile.userId = user.id',
+			);
 
 		const notes = (await query.getMany()).filter(noteFilter);
 

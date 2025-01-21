@@ -53,8 +53,9 @@ export class SignupService {
 		passwordHash?: MiUserProfile['password'] | null;
 		host?: string | null;
 		ignorePreservedUsernames?: boolean;
+		prefecture: MiUserProfile['prefecture'];
 	}) {
-		const { username, password, passwordHash, host } = opts;
+		const { username, password, passwordHash, host, prefecture } = opts;
 		let hash = passwordHash;
 
 		// Validate username
@@ -142,6 +143,7 @@ export class SignupService {
 				userId: account.id,
 				autoAcceptFollowed: true,
 				password: hash,
+				prefecture: prefecture,
 			}));
 
 			await transactionalEntityManager.save(new MiUsedUsername({

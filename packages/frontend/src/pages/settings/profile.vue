@@ -27,10 +27,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 		<template #caption>{{ i18n.ts._profile.youCanIncludeHashtags }}</template>
 	</MkTextarea>
 
-	<MkInput v-model="profile.location" manualSave>
+	<!-- ユーザーがどれに都道府県を設定したらいいか混乱する原因になるので、利用しない。 -->
+	<!-- <MkInput v-model="profile.location" manualSave>
 		<template #label>{{ i18n.ts.location }}</template>
 		<template #prefix><i class="ti ti-map-pin"></i></template>
-	</MkInput>
+	</MkInput> -->
+
+	<MkSelect v-model="profile.prefecture" required>
+		<template #label>{{ i18n.ts._timelines.prefecture }}</template>
+		<option v-for="x in Object.keys(i18n.ts._prefecture)" :key="x" :value="x">{{ i18n.ts._prefecture[x] }}</option>
+	</MkSelect>
 
 	<MkInput v-model="profile.birthday" type="date" manualSave>
 		<template #label>{{ i18n.ts.birthday }}</template>
@@ -151,6 +157,7 @@ const profile = reactive({
 	description: $i.description,
 	followedMessage: $i.followedMessage,
 	location: $i.location,
+	prefecture: $i.prefecture,
 	birthday: $i.birthday,
 	lang: assertVaildLang($i.lang) ? $i.lang : null,
 	isBot: $i.isBot ?? false,
@@ -200,6 +207,7 @@ function save() {
 		followedMessage: profile.followedMessage || null,
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		location: profile.location || null,
+		prefecture: profile.prefecture,
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		birthday: profile.birthday || null,
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

@@ -122,6 +122,64 @@ export const moderationLogTypes = [
 	'deleteGalleryPost',
 ] as const;
 
+/**
+ * 都道府県
+ */
+export const prefectures = [
+	'_empty',
+	'hokkaido',
+	'aomori',
+	'iwate',
+	'miyagi',
+	'akita',
+	'yamagata',
+	'fukushima',
+	'ibaraki',
+	'tochigi',
+	'gunma',
+	'saitama',
+	'chiba',
+	'tokyo',
+	'kanagawa',
+	'niigata',
+	'toyama',
+	'ishikawa',
+	'fukui',
+	'yamanashi',
+	'nagano',
+	'gifu',
+	'shizuoka',
+	'aichi',
+	'mie',
+	'shiga',
+	'kyoto',
+	'osaka',
+	'hyogo',
+	'nara',
+	'wakayama',
+	'tottori',
+	'shimane',
+	'okayama',
+	'hiroshima',
+	'yamaguchi',
+	'tokushima',
+	'kagawa',
+	'ehime',
+	'kochi',
+	'fukuoka',
+	'saga',
+	'nagasaki',
+	'kumamoto',
+	'oita',
+	'miyazaki',
+	'kagoshima',
+	'okinawa',
+] as const;
+
+export function isValidPrefecture(prefecture: string): prefecture is typeof prefectures[number] {
+	return prefectures.includes(prefecture as typeof prefectures[number]);
+}
+
 export type ModerationLogPayloads = {
 	updateServerSettings: {
 		before: any | null;

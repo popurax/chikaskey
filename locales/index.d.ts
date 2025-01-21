@@ -5645,6 +5645,10 @@ export interface Locale extends ILocale {
          */
         "home": string;
         /**
+         * 都道府県タイムラインでは、このサーバーにいるユーザーが所属する都道府県ごとの投稿を見られます。
+         */
+        "prefecture": string;
+        /**
          * ローカルタイムラインでは、このサーバーにいるユーザー全員の投稿を見られます。
          */
         "local": string;
@@ -8963,6 +8967,10 @@ export interface Locale extends ILocale {
          */
         "home": string;
         /**
+         * 都道府県
+         */
+        "prefecture": string;
+        /**
          * ローカル
          */
         "local": string;
@@ -10470,6 +10478,200 @@ export interface Locale extends ILocale {
          * 生成されたコードをウェブサイトに貼り付けてご利用ください。
          */
         "codeGeneratedDescription": string;
+    };
+    "_prefecture": {
+        /**
+         * （未設定）
+         */
+        "_empty": string;
+        /**
+         * 北海道
+         */
+        "hokkaido": string;
+        /**
+         * 青森県
+         */
+        "aomori": string;
+        /**
+         * 岩手県
+         */
+        "iwate": string;
+        /**
+         * 宮城県
+         */
+        "miyagi": string;
+        /**
+         * 秋田県
+         */
+        "akita": string;
+        /**
+         * 山形県
+         */
+        "yamagata": string;
+        /**
+         * 福島県
+         */
+        "fukushima": string;
+        /**
+         * 茨城県
+         */
+        "ibaraki": string;
+        /**
+         * 栃木県
+         */
+        "tochigi": string;
+        /**
+         * 群馬県
+         */
+        "gunma": string;
+        /**
+         * 埼玉県
+         */
+        "saitama": string;
+        /**
+         * 千葉県
+         */
+        "chiba": string;
+        /**
+         * 東京都
+         */
+        "tokyo": string;
+        /**
+         * 神奈川県
+         */
+        "kanagawa": string;
+        /**
+         * 新潟県
+         */
+        "niigata": string;
+        /**
+         * 富山県
+         */
+        "toyama": string;
+        /**
+         * 石川県
+         */
+        "ishikawa": string;
+        /**
+         * 福井県
+         */
+        "fukui": string;
+        /**
+         * 山梨県
+         */
+        "yamanashi": string;
+        /**
+         * 長野県
+         */
+        "nagano": string;
+        /**
+         * 岐阜県
+         */
+        "gifu": string;
+        /**
+         * 静岡県
+         */
+        "shizuoka": string;
+        /**
+         * 愛知県
+         */
+        "aichi": string;
+        /**
+         * 三重県
+         */
+        "mie": string;
+        /**
+         * 滋賀県
+         */
+        "shiga": string;
+        /**
+         * 京都府
+         */
+        "kyoto": string;
+        /**
+         * 大阪府
+         */
+        "osaka": string;
+        /**
+         * 兵庫県
+         */
+        "hyogo": string;
+        /**
+         * 奈良県
+         */
+        "nara": string;
+        /**
+         * 和歌山県
+         */
+        "wakayama": string;
+        /**
+         * 鳥取県
+         */
+        "tottori": string;
+        /**
+         * 島根県
+         */
+        "shimane": string;
+        /**
+         * 岡山県
+         */
+        "okayama": string;
+        /**
+         * 広島県
+         */
+        "hiroshima": string;
+        /**
+         * 山口県
+         */
+        "yamaguchi": string;
+        /**
+         * 徳島県
+         */
+        "tokushima": string;
+        /**
+         * 香川県
+         */
+        "kagawa": string;
+        /**
+         * 愛媛県
+         */
+        "ehime": string;
+        /**
+         * 高知県
+         */
+        "kochi": string;
+        /**
+         * 福岡県
+         */
+        "fukuoka": string;
+        /**
+         * 佐賀県
+         */
+        "saga": string;
+        /**
+         * 長崎県
+         */
+        "nagasaki": string;
+        /**
+         * 熊本県
+         */
+        "kumamoto": string;
+        /**
+         * 大分県
+         */
+        "oita": string;
+        /**
+         * 宮崎県
+         */
+        "miyazaki": string;
+        /**
+         * 鹿児島県
+         */
+        "kagoshima": string;
+        /**
+         * 沖縄県
+         */
+        "okinawa": string;
     };
 }
 declare const locales: {

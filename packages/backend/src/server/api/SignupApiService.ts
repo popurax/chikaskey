@@ -18,6 +18,8 @@ import { MiLocalUser } from '@/models/User.js';
 import { FastifyReplyError } from '@/misc/fastify-reply-error.js';
 import { bindThis } from '@/decorators.js';
 import { L_CHARS, secureRndstr } from '@/misc/secure-rndstr.js';
+import { isValidPrefecture } from '@/types.js';
+import { MiUser } from '@/models/User.js';
 import { SigninService } from './SigninService.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 
@@ -68,6 +70,7 @@ export class SignupApiService {
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
 				'testcaptcha-response'?: string;
+				prefecture: string;
 			}
 		}>,
 		reply: FastifyReply,
@@ -113,6 +116,13 @@ export class SignupApiService {
 		const host: string | null = process.env.NODE_ENV === 'test' ? (body['host'] ?? null) : null;
 		const invitationCode = body['invitationCode'];
 		const emailAddress = body['emailAddress'];
+		const prefecture = body['prefecture'];
+
+		// 都道府県バリデーション
+		if (!isValidPrefecture(prefecture)) {
+			reply.code(400);
+			return;
+		}
 
 		if (this.meta.emailRequiredForSignup) {
 			if (emailAddress == null || typeof emailAddress !== 'string') {
@@ -215,7 +225,7 @@ export class SignupApiService {
 		} else {
 			try {
 				const { account, secret } = await this.signupService.signup({
-					username, password, host,
+					username, password, host, prefecture,
 				});
 
 				const res = await this.userEntityService.pack(account, account, {
@@ -257,6 +267,7 @@ export class SignupApiService {
 			const { account, secret } = await this.signupService.signup({
 				username: pendingUser.username,
 				passwordHash: pendingUser.password,
+				prefecture: pendingUser.prefecture,
 			});
 
 			this.userPendingsRepository.delete({

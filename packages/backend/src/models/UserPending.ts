@@ -4,6 +4,7 @@
  */
 
 import { PrimaryColumn, Entity, Index, Column } from 'typeorm';
+import { prefectures } from '@/types.js';
 import { id } from './util/id.js';
 
 @Entity('user_pending')
@@ -31,4 +32,10 @@ export class MiUserPending {
 		length: 128,
 	})
 	public password: string;
+
+	@Column('enum', {
+		enum: prefectures,
+		nullable: true,
+	})
+	public prefecture: typeof prefectures[number] | null;
 }

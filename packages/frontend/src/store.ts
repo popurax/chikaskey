@@ -9,8 +9,10 @@ import { hemisphere } from '@@/js/intl-const.js';
 import lightTheme from '@@/themes/l-light.json5';
 import darkTheme from '@@/themes/d-green-lime.json5';
 import { miLocalStorage } from './local-storage.js';
+import { $i } from './account.js';
 import type { SoundType } from '@/scripts/sound.js';
 import { Storage } from '@/pizzax.js';
+import { i18n } from '@/i18n.js';
 
 interface PostFormAction {
 	title: string,
@@ -189,13 +191,14 @@ export const defaultStore = markRaw(new Storage('base', {
 	tl: {
 		where: 'deviceAccount',
 		default: {
-			src: 'home' as 'home' | 'local' | 'social' | 'global' | `list:${string}`,
+			src: 'home' as 'home' | 'prefecture' | 'local' | 'social' | 'global' | `list:${string}`,
 			userList: null as Misskey.entities.UserList | null,
 			filter: {
 				withReplies: true,
 				withRenotes: true,
 				withSensitive: true,
 				onlyFiles: false,
+				prefecture: (($i?.prefecture == null || $i.prefecture === '_empty') ? 'tokyo' : $i.prefecture) as keyof typeof i18n.ts._prefecture,
 			},
 		},
 	},

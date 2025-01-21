@@ -39,6 +39,7 @@ const props = withDefaults(defineProps<{
 	withRenotes?: boolean;
 	withReplies?: boolean;
 	onlyFiles?: boolean;
+	prefecture?: string;
 }>(), {
 	withRenotes: true,
 	withReplies: false,
@@ -105,6 +106,13 @@ function connectChannel() {
 			withFiles: props.onlyFiles ? true : undefined,
 		});
 		connection2 = stream.useChannel('main');
+	} else if (props.src === 'prefecture') {
+		connection = stream.useChannel('prefectureTimeline', {
+			withRenotes: props.withRenotes,
+			withReplies: props.withReplies,
+			withFiles: props.onlyFiles ? true : undefined,
+			prefecture: props.prefecture,
+		});
 	} else if (props.src === 'local') {
 		connection = stream.useChannel('localTimeline', {
 			withRenotes: props.withRenotes,
@@ -173,6 +181,14 @@ function updatePaginationQuery() {
 		query = {
 			withRenotes: props.withRenotes,
 			withFiles: props.onlyFiles ? true : undefined,
+		};
+	} else if (props.src === 'prefecture') {
+		endpoint = 'notes/prefecture-timeline';
+		query = {
+			withRenotes: props.withRenotes,
+			withReplies: props.withReplies,
+			withFiles: props.onlyFiles ? true : undefined,
+			prefecture: props.prefecture,
 		};
 	} else if (props.src === 'local') {
 		endpoint = 'notes/local-timeline';

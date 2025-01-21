@@ -62,6 +62,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<span v-if="passwordRetypeState == 'not-match'" style="color: var(--MI_THEME-error)"><i class="ti ti-alert-triangle ti-fw"></i> {{ i18n.ts.passwordNotMatched }}</span>
 				</template>
 			</MkInput>
+			<MkSelect v-model="prefecture" required>
+				<template #label>{{ i18n.ts._timelines.prefecture }}</template>
+				<option v-for="x in Object.keys(i18n.ts._prefecture)" :key="x" :value="x">{{ i18n.ts._prefecture[x] }}</option>
+			</MkSelect>
 			<MkCaptcha v-if="instance.enableHcaptcha" ref="hcaptcha" v-model="hCaptchaResponse" :class="$style.captcha" provider="hcaptcha" :sitekey="instance.hcaptchaSiteKey"/>
 			<MkCaptcha v-if="instance.enableMcaptcha" ref="mcaptcha" v-model="mCaptchaResponse" :class="$style.captcha" provider="mcaptcha" :sitekey="instance.mcaptchaSiteKey" :instanceUrl="instance.mcaptchaInstanceUrl"/>
 			<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
@@ -85,6 +89,7 @@ import * as Misskey from 'misskey-js';
 import * as config from '@@/js/config.js';
 import MkButton from './MkButton.vue';
 import MkInput from './MkInput.vue';
+import MkSelect from '@/components/MkSelect.vue';
 import MkCaptcha, { type Captcha } from '@/components/MkCaptcha.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
@@ -128,6 +133,7 @@ const turnstileResponse = ref<string | null>(null);
 const testcaptchaResponse = ref<string | null>(null);
 const usernameAbortController = ref<null | AbortController>(null);
 const emailAbortController = ref<null | AbortController>(null);
+const prefecture = ref<keyof typeof i18n.ts._prefecture>('_empty');
 
 const shouldDisableSubmitting = computed((): boolean => {
 	return submitting.value ||
@@ -259,6 +265,8 @@ async function onSubmit(): Promise<void> {
 		password: password.value,
 		emailAddress: email.value,
 		invitationCode: invitationCode.value,
+		// @ts-ignore
+		prefecture: prefecture.value,
 		'hcaptcha-response': hCaptchaResponse.value,
 		'm-captcha-response': mCaptchaResponse.value,
 		'g-recaptcha-response': reCaptchaResponse.value,
