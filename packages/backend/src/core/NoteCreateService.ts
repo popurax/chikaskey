@@ -56,6 +56,7 @@ import { isReply } from '@/misc/is-reply.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 import { IdentifiableError } from '@/misc/identifiable-error.js';
 import { CollapsedQueue } from '@/misc/collapsed-queue.js';
+import { prefectures } from '@/types.js';
 
 type NotificationType = 'reply' | 'renote' | 'quote' | 'mention';
 
@@ -390,7 +391,14 @@ export class NoteCreateService implements OnApplicationShutdown {
 			throw new IdentifiableError('9f466dab-c856-48cd-9e65-ff90ff750580', 'Note contains too many mentions');
 		}
 
-		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers);
+		// 都道府県を取得
+		const profiles = await this.userProfilesRepository.findBy({ userId: user.id });
+		if (profiles.length === 0) {
+			throw new IdentifiableError('9f466dab-c856-48cd-9e65-ff90ff750580', 'not profiles');
+		}
+		const prefecture = profiles[0].prefecture;
+
+		const note = await this.insertNote(user, data, tags, emojis, mentionedUsers, prefecture);
 
 		setImmediate('post created', { signal: this.#shutdownController.signal }).then(
 			() => this.postNoteCreated(note, user, data, silent, tags!, mentionedUsers!),
@@ -401,7 +409,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 	}
 
 	@bindThis
-	private async insertNote(user: { id: MiUser['id']; host: MiUser['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[]) {
+	private async insertNote(user: { id: MiUser['id']; host: MiUser['host']; }, data: Option, tags: string[], emojis: string[], mentionedUsers: MinimumUser[], prefecture: typeof prefectures[number] | null) {
 		const insert = new MiNote({
 			id: this.idService.gen(data.createdAt?.getTime()),
 			fileIds: data.files ? data.files.map(file => file.id) : [],
@@ -428,7 +436,7 @@ export class NoteCreateService implements OnApplicationShutdown {
 					? data.visibleUsers.map(u => u.id)
 					: []
 				: [],
-
+			prefecture: prefecture,
 			attachedFileTypes: data.files ? data.files.map(file => file.type) : [],
 
 			// 以下非正規化データ

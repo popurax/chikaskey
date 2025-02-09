@@ -158,13 +158,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			.leftJoinAndSelect('note.reply', 'reply')
 			.leftJoinAndSelect('note.renote', 'renote')
 			.leftJoinAndSelect('reply.user', 'replyUser')
-			.leftJoinAndSelect('renote.user', 'renoteUser')
-			.leftJoinAndMapOne(
-				'user.profile',
-				MiUserProfile,
-				'userProfile',
-				'userProfile.userId = user.id',
-			);
+			.leftJoinAndSelect('renote.user', 'renoteUser');
 
 		this.queryService.generateVisibilityQuery(query, me);
 		if (me) this.queryService.generateMutedUserQuery(query, me);
@@ -190,7 +184,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		if (ps.prefecture != null) {
 			query.andWhere(new Brackets(qb => {
 				qb
-					.where('userProfile.prefecture = :prefecture', { prefecture: ps.prefecture });
+					.where('note.prefecture = :prefecture', { prefecture: ps.prefecture });
 			}));
 		}
 

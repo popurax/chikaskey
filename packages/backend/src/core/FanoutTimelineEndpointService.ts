@@ -124,8 +124,7 @@ export class FanoutTimelineEndpointService {
 			if (ps.prefecture) {
 				const parentFilter = filter;
 				filter = (note) => {
-					// @ts-expect-error: プロパティ 'profile' はタイプ 'MiUser' に存在しません
-					return note.user?.profile?.prefecture === ps.prefecture && parentFilter(note);
+					return note.prefecture === ps.prefecture && parentFilter(note);
 				};
 			}
 
@@ -178,13 +177,7 @@ export class FanoutTimelineEndpointService {
 			.leftJoinAndSelect('note.renote', 'renote')
 			.leftJoinAndSelect('reply.user', 'replyUser')
 			.leftJoinAndSelect('renote.user', 'renoteUser')
-			.leftJoinAndSelect('note.channel', 'channel')
-			.leftJoinAndMapOne(
-				'user.profile',
-				MiUserProfile,
-				'userProfile',
-				'userProfile.userId = user.id',
-			);
+			.leftJoinAndSelect('note.channel', 'channel');
 
 		const notes = (await query.getMany()).filter(noteFilter);
 

@@ -4,7 +4,7 @@
  */
 
 import { Entity, Index, JoinColumn, Column, PrimaryColumn, ManyToOne } from 'typeorm';
-import { noteVisibilities } from '@/types.js';
+import { noteVisibilities, prefectures } from '@/types.js';
 import { id } from './util/id.js';
 import { MiUser } from './User.js';
 import { MiChannel } from './Channel.js';
@@ -230,6 +230,12 @@ export class MiNote {
 	})
 	public renoteUserHost: string | null;
 	//#endregion
+
+	@Column('enum', {
+		enum: prefectures,
+		nullable: true,
+	})
+	public prefecture: typeof prefectures[number] | null;
 
 	constructor(data: Partial<MiNote>) {
 		if (data == null) return;
